@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Quality Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div>Loading...</div>
+    </div>
+    <div class="container" id="mainContent" style="display: none;">
+        <h2>🍷</h2>
+        <h2>Wine Quality Predictor</h2>
+        <form action="{{ url_for('predict') }}" method="post" id="predictForm">
+            {% for column in model_columns %}
+            <div class="form-group">
+                <label for="{{ column }}">{{ column }}</label>
+                <input type="number" step="any" name="{{ column }}" id="{{ column }}" required>
+            </div>
+            {% endfor %}
+            <button type="submit">Predict</button>
+        </form>
+        <div id="predictionResult" style="margin-top: 20px;">
+            <div id="loadingPrediction" style="display: none;">
+                <p>Loading...</p>
+            </div>
+            <div id="resultContent">
+                {% if prediction_text %}
+                <h3>{{ prediction_text }}</h3>
+                {% endif %}
+            </div>
+        </div>
+
+        <script>
+            // Handle form submission and show loading indicator
+            document.getElementById('predictForm').addEventListener('submit', function (event) {
+                document.getElementById('loadingPrediction').style.display = 'block';
+                document.getElementById('resultContent').style.display = 'none';
+            });
+
+            // Hide loading indicator and show result when prediction is complete
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('loadingPrediction').style.display = 'none';
+                document.getElementById('resultContent').style.display = 'block';
+            });
+        </script>
+
+</body>
+
+</html>
+
